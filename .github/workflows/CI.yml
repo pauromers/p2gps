@@ -2,15 +2,16 @@ name: CI solamente
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   workflow_dispatch:
+
 jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
       contents: write
       packages: write
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3 #descarga el repositorio en el ejecutor
@@ -27,6 +28,7 @@ jobs:
       - uses: gradle/gradle-build-action@v2.6.0 #la última versión de v2 usa cache y da problemas de dependencias con el build
         with:
           gradle-version: 2.1
+
       - name: build del Front
         working-directory: src/Clients
         run: ./gradlew build
@@ -34,19 +36,18 @@ jobs:
         with:
           name: Clients
           path: src/Clients/build/libs
+
       - name: build del Back
         working-directory: src/Backend/OrderService
         run: ./gradlew build test
 
-#...
       - name: dockerizar el front y el backend
         run: |
           cp src/Clients/build/libs/*.war deploy/docker/Clients/drop #copiar el resultado del build para la nueva imagen
           docker build -t p2gps/web deploy/docker/Clients
           cp src/Backend/OrderService/build/libs/ordering* deploy/docker/Order/drop #copiar el resultado del build para la nueva imagen
           docker build -t p2gps/order deploy/docker/Order
-
-      ### SUBIR IMAGENES A DOCKERHUB #####
+      ### SUBIR IMÁGENES A DOCKERHUB ###
       - name: Login to DockerHub
         uses: docker/login-action@v2
         with:
