@@ -28,7 +28,6 @@ jobs:
       - uses: gradle/gradle-build-action@v2.6.0 #la última versión de v2 usa cache y da problemas de dependencias con el build
         with:
           gradle-version: 2.1
-
       - name: build del Front
         working-directory: src/Clients
         run: ./gradlew build
