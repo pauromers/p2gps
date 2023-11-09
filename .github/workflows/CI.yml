@@ -31,3 +31,10 @@ jobs:
       - name: build del Front
         working-directory: src/Clients
         run: ./gradlew build
+      - uses: actions/upload-artifact@v3 #guardar en Artifacts el resultado del build. No hace falta, es por curiosidad.
+        with:
+          name: Clients
+          path: src/Clients/build/libs
+      - name: build del Back
+        working-directory: src/Backend/OrderService
+        run: ./gradlew build test
